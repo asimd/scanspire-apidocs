@@ -1,14 +1,12 @@
 openapi: 3.0.0
 info:
-  title: ScanSpire API
+  title: Scanspire API
   version: 1.0.0
-  description: API documentation for ScanSpire, including authentication, scan management, and domain management.
+  description: API documentation for Scanspire, including authentication, scan management, and domain management.
 
 servers:
   - url: https://api.scanspire.com/v1
     description: Production server
-  - url: https://staging-api.scanspire.com/v1
-    description: Staging server
 
 tags:
   - name: Authentication
@@ -50,19 +48,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-  schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-        errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
 
 security:
   - bearerAuth: []
