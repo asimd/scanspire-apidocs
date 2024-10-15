@@ -48,10 +48,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
