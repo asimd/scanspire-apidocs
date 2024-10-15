@@ -26,7 +26,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a new scan
       description: Create a new scan for the authenticated user
@@ -55,19 +55,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '403':
           description: Scan limit reached
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/scans/{uuid}:
     get:
@@ -93,13 +93,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     put:
       summary: Update a scan
       description: Update details of a specific scan
@@ -134,19 +134,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a scan
       description: Mark a scan as deleted
@@ -173,19 +173,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '400':
           description: Cannot delete finished or in-progress scan
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/scans/{uuid}/results:
     get:
@@ -220,19 +220,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '404':
           description: Scan not found
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
