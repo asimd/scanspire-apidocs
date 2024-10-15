@@ -1,58 +1,63 @@
-# How to host Swagger API documentation with GitHub Pages
-[<img alt="The blog of Peter Evans: How to Host Swagger Documentation With Github Pages" title="View blog post" src="https://peterevans.dev/img/blog-published-badge.svg">](https://peterevans.dev/posts/how-to-host-swagger-docs-with-github-pages/)
+# ScanSpire API Documentation
 
-This repository is a template for using the [Swagger UI](https://github.com/swagger-api/swagger-ui) to dynamically generate beautiful documentation for your API and host it for free with GitHub Pages.
+This repository hosts the Swagger UI for ScanSpire's API documentation. It uses GitHub Pages to provide a beautiful, interactive interface for exploring and understanding the ScanSpire API.
 
-The template will periodically auto-update the Swagger UI dependency and create a pull request. See the [GitHub Actions workflow here](.github/workflows/update-swagger.yml).
+## Viewing the Documentation
 
-The example API specification used by this repository can be seen hosted at [https://peter-evans.github.io/swagger-github-pages](https://peter-evans.github.io/swagger-github-pages/).
+You can view the live API documentation at [https://asimd.github.io/scanspire-apidocs](https://asimd.github.io/scanspire-apidocs).
 
-## Steps to use this template
+## API Specification
 
-1. Click the `Use this template` button above to create a new repository from this template.
+The API specification is defined in the `swagger.yaml` file in the root of this repository. This file is dynamically loaded by Swagger UI to generate the interactive documentation.
 
-2. Go to the settings for your repository at `https://github.com/{github-username}/{repository-name}/settings` and enable GitHub Pages.
+## Structure
 
-    ![Headers](/screenshots/swagger-github-pages.png?raw=true)
-    
-3. Browse to the Swagger documentation at `https://{github-username}.github.io/{repository-name}/`.
+The repository is structured as follows:
 
+- `index.html`: The main HTML file that loads Swagger UI.
+- `swagger.yaml`: The main OpenAPI/Swagger specification file.
+- `auth_controller.yaml`: Specification for authentication endpoints.
+- `scan_controller.yaml`: Specification for scan-related endpoints.
+- `domain_controller.yaml`: Specification for domain-related endpoints.
+- `dist/`: Directory containing the Swagger UI assets.
 
-## Steps to manually configure in your own repository
+## Updating the Documentation
 
-1. Download the latest stable release of the Swagger UI [here](https://github.com/swagger-api/swagger-ui/releases).
+To update the API documentation:
 
-2. Extract the contents and copy the "dist" directory to the root of your repository.
+1. Modify the relevant YAML files (`swagger.yaml`, `auth_controller.yaml`, `scan_controller.yaml`, or `domain_controller.yaml`).
+2. Commit and push your changes to the `master` branch.
+3. GitHub Pages will automatically rebuild and deploy the updated documentation.
 
-3. Move the file "index.html" from the directory "dist" to the root of your repository.
-    ```
-    mv dist/index.html .
-    ```
-    
-4. Copy the YAML specification file for your API to the root of your repository.
+## Local Development
 
-5. Edit [dist/swagger-initializer.js](dist/swagger-initializer.js) and change the `url` property to reference your local YAML file. 
-    ```javascript
-        window.ui = SwaggerUIBundle({
-            url: "swagger.yaml",
-        ...
-    ```
-    Then fix any references to files in the "dist" directory.
-    ```html
-    ...
-    <link rel="stylesheet" type="text/css" href="dist/swagger-ui.css" >
-    <link rel="icon" type="image/png" href="dist/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="dist/favicon-16x16.png" sizes="16x16" />    
-    ...
-    <script src="dist/swagger-ui-bundle.js"> </script>
-    <script src="dist/swagger-ui-standalone-preset.js"> </script>    
-    ...
-    ```
-    
-6. Go to the settings for your repository at `https://github.com/{github-username}/{repository-name}/settings` and enable GitHub Pages.
+To run the documentation locally:
 
-    ![Headers](/screenshots/swagger-github-pages.png?raw=true)
-    
-7. Browse to the Swagger documentation at `https://{github-username}.github.io/{repository-name}/`.
+1. Clone this repository:
+   ```
+   git clone https://github.com/asimd/scanspire-apidocs.git
+   cd scanspire-apidocs
+   ```
 
-   The example API specification used by this repository can be seen hosted at [https://peter-evans.github.io/swagger-github-pages](https://peter-evans.github.io/swagger-github-pages/).
+2. Serve the directory with a local HTTP server. For example, using Python:
+   ```
+   python -m http.server 8000
+   ```
+
+3. Open your browser and navigate to `http://localhost:8000`.
+
+## Automatic Updates
+
+This repository is set up with a GitHub Actions workflow that periodically checks for updates to Swagger UI. When updates are available, it will automatically create a pull request to update the dependency.
+
+## Contributing
+
+If you find any issues or have suggestions for improving the API documentation, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+This API documentation is powered by [Swagger UI](https://github.com/swagger-api/swagger-ui) and hosted with GitHub Pages.
