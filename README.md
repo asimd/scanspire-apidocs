@@ -1,6 +1,6 @@
-# ScanSpire API Documentation
+# Scanspire API Documentation
 
-This repository hosts the Swagger UI for ScanSpire's API documentation. It uses GitHub Pages to provide a beautiful, interactive interface for exploring and understanding the ScanSpire API.
+This repository hosts the Swagger UI for Scanspire's API documentation. It uses GitHub Pages to provide a beautiful, interactive interface for exploring and understanding the Scanspire API.
 
 ## Viewing the Documentation
 
