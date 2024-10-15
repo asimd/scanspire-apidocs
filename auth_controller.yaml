@@ -1,0 +1,57 @@
+paths:
+  /login:
+    post:
+      summary: Authenticate user
+      description: Authenticate a user using their API key and secret
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_key:
+                  type: string
+                  description: The user's API key
+                api_secret:
+                  type: string
+                  description: The user's API secret
+              required:
+                - api_key
+                - api_secret
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: The Bearer token to be used for authenticated requests
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_at:
+                    type: string
+                    format: date-time
+                    description: The expiration time of the token
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The creation time of the token
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'

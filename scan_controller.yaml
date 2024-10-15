@@ -1,0 +1,331 @@
+paths:
+  /api/v1/scans:
+    get:
+      summary: List scans
+      description: Retrieve a paginated list of scans for the authenticated user
+      tags:
+        - Scans
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Scan'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    post:
+      summary: Create a new scan
+      description: Create a new scan for the authenticated user
+      tags:
+        - Scans
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanInput'
+      responses:
+        '201':
+          description: Scan created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  scan:
+                    $ref: '#/components/schemas/Scan'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '403':
+          description: Scan limit reached
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/scans/{uuid}:
+    get:
+      summary: Get a specific scan
+      description: Retrieve details of a specific scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scan'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    put:
+      summary: Update a scan
+      description: Update details of a specific scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanInput'
+      responses:
+        '200':
+          description: Scan updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  scan:
+                    $ref: '#/components/schemas/Scan'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    delete:
+      summary: Delete a scan
+      description: Mark a scan as deleted
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scan deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '400':
+          description: Cannot delete finished or in-progress scan
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/scans/{uuid}/results:
+    get:
+      summary: Get scan results
+      description: Retrieve the results of a finished scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScanResult'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+        '400':
+          description: Scan results not available
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+components:
+  schemas:
+    Scan:
+      type: object
+      properties:
+        uuid:
+          type: string
+        scan_name:
+          type: string
+        scan_occurrence:
+          type: string
+          enum: [daily, weekly, monthly, 'once off']
+        scan_type:
+          type: array
+          items:
+            type: string
+        severity:
+          type: array
+          items:
+            type: string
+        next_scan_date:
+          type: string
+          format: date
+        next_scan_time:
+          type: string
+          format: time
+        status:
+          type: string
+        domain:
+          type: string
+        subdomains:
+          type: array
+          items:
+            type: string
+        is_authenticated_scan:
+          type: boolean
+    ScanInput:
+      type: object
+      properties:
+        scan_name:
+          type: string
+        scan_domain:
+          type: string
+        scan_type:
+          type: array
+          items:
+            type: string
+        severity:
+          type: array
+          items:
+            type: string
+        scan_occurrence:
+          type: string
+          enum: [daily, weekly, monthly, 'once off']
+        next_scan_date:
+          type: string
+          format: date
+        next_scan_time:
+          type: string
+          format: time
+        status:
+          type: string
+        scan_subdomain:
+          type: array
+          items:
+            type: string
+        is_authenticated_scan:
+          type: boolean
+      required:
+        - scan_name
+        - scan_domain
+        - scan_type
+        - severity
+        - scan_occurrence
+        - next_scan_date
+        - next_scan_time
+        - status
+        - scan_subdomain
+    ScanResult:
+      type: object
+      properties:
+        uuid:
+          type: string
+        severity:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

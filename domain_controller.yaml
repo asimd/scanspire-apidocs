@@ -1,0 +1,396 @@
+paths:
+  /api/v1/domains:
+    get:
+      summary: List domains
+      description: Retrieve a paginated list of domains for the authenticated user
+      tags:
+        - Domains
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Domain'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+    post:
+      summary: Create a new domain
+      description: Create a new domain for the authenticated user
+      tags:
+        - Domains
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainInput'
+      responses:
+        '201':
+          description: Domain created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+
+  /api/v1/domains/{uuid}:
+    get:
+      summary: Get a specific domain
+      description: Retrieve details of a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    put:
+      summary: Update a domain
+      description: Update details of a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainUpdateInput'
+      responses:
+        '200':
+          description: Domain updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    delete:
+      summary: Delete a domain
+      description: Delete a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Domain deleted successfully
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains:
+    get:
+      summary: List subdomains
+      description: Retrieve a list of subdomains for a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subdomain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+    post:
+      summary: Add a subdomain
+      description: Add a new subdomain to a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdomainInput'
+      responses:
+        '201':
+          description: Subdomain added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdomain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/import:
+    post:
+      summary: Import subdomains
+      description: Import multiple subdomains to a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subdomains:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Subdomains imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  imported:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/toggle:
+    post:
+      summary: Toggle domain activation
+      description: Toggle the activation status of a domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Domain activation toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainToggleResponse'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/{subdomain_id}/toggle:
+    post:
+      summary: Toggle subdomain activation
+      description: Toggle the activation status of a subdomain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subdomain_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subdomain activation toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdomainToggleResponse'
+        '404':
+          description: Domain or subdomain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/{subdomain_id}:
+    delete:
+      summary: Delete a subdomain
+      description: Delete a specific subdomain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subdomain_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Subdomain deleted successfully
+        '404':
+          description: Domain or subdomain not found
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+        '403':
+          description: Cannot delete main domain
+          content:
+            application/json:
+              schema:
+                $ref: './swagger.yaml#/components/schemas/Error'
+
+components:
+  schemas:
+    Domain:
+      type: object
+      properties:
+        uuid:
+          type: string
+        domain:
+          type: string
+        domain_key:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DomainInput:
+      type: object
+      properties:
+        domain:
+          type: string
+        domain_key:
+          type: string
+      required:
+        - domain
+        - domain_key
+    DomainUpdateInput:
+      type: object
+      properties:
+        active:
+          type: boolean
+        waf_enabled:
+          type: boolean
+        ssl_enabled:
+          type: boolean
+        waf_configuration:
+          type: object
+    DomainToggleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        domain:
+          $ref: '#/components/schemas/Domain'
+    Subdomain:
+      type: object
+      properties:
+        subdomain:
+          type: string
+        full_subdomain:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    SubdomainInput:
+      type: object
+      properties:
+        subdomain:
+          type: string
+      required:
+        - subdomain
+    SubdomainToggleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        subdomain:
+          $ref: '#/components/schemas/Subdomain'
