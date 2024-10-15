@@ -48,6 +48,18 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
 
 security:
   - bearerAuth: []
