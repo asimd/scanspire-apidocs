@@ -4,7 +4,7 @@ This repository hosts the Swagger UI for Scanspire's API documentation. It uses 
 
 ## Viewing the Documentation
 
-You can view the live API documentation at [https://asimd.github.io/scanspire-apidocs](https://asimd.github.io/scanspire-apidocs).
+You can view the live API documentation at [[https://asimd.github.io/scanspire-apidocs]([https://apidocs.scanspire.com](https://apidocs.scanspire.com/)/)](https://asimd.github.io/scanspire-apidocs).
 
 ## API Specification
 
