@@ -64,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     put:
       summary: Update a domain
       description: Update details of a specific domain
@@ -94,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a domain
       description: Delete a specific domain
@@ -114,7 +114,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/domains/{uuid}/subdomains:
     get:
@@ -142,7 +142,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
     post:
       summary: Add a subdomain
       description: Add a new subdomain to a specific domain
@@ -172,13 +172,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/domains/{uuid}/subdomains/import:
     post:
@@ -222,13 +222,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/domains/{uuid}/toggle:
     post:
@@ -254,7 +254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/domains/{uuid}/subdomains/{subdomain_id}/toggle:
     post:
@@ -285,7 +285,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
   /api/v1/domains/{uuid}/subdomains/{subdomain_id}:
     delete:
@@ -312,13 +312,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
         '403':
           description: Cannot delete main domain
           content:
             application/json:
               schema:
-                $ref: './swagger.yaml#/components/schemas/Error'
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
