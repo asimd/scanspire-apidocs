@@ -678,6 +678,9 @@ components:
             type: string
         is_authenticated_scan:
           type: boolean
+        scan_method:
+          type: string
+          enum: [Blackbox, Whitebox]
 
     ScanInput:
       type: object
@@ -711,6 +714,9 @@ components:
             type: string
         is_authenticated_scan:
           type: boolean
+        scan_method:
+          type: string
+          enum: [Blackbox, Whitebox]
       required:
         - scan_name
         - scan_domain
@@ -721,6 +727,7 @@ components:
         - next_scan_time
         - status
         - scan_subdomain
+        - scan_method
 
     ScanResult:
       type: object
