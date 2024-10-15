@@ -18,36 +18,619 @@ tags:
 
 paths:
   /login:
-    $ref: './auth_controller.yaml#/paths/~1login'
+    post:
+      summary: Authenticate user
+      description: Authenticate a user using their API key and secret
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_key:
+                  type: string
+                  description: The user's API key
+                api_secret:
+                  type: string
+                  description: The user's API secret
+              required:
+                - api_key
+                - api_secret
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: The Bearer token to be used for authenticated requests
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_at:
+                    type: string
+                    format: date-time
+                    description: The expiration time of the token
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The creation time of the token
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /scans:
-    $ref: './scan_controller.yaml#/paths/~1api~1v1~1scans'
-  /scans/{uuid}:
-    $ref: './scan_controller.yaml#/paths/~1api~1v1~1scans~1{uuid}'
-  /scans/{uuid}/results:
-    $ref: './scan_controller.yaml#/paths/~1api~1v1~1scans~1{uuid}~1results'
+  /api/v1/scans:
+    get:
+      summary: List scans
+      description: Retrieve a paginated list of scans for the authenticated user
+      tags:
+        - Scans
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Scan'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new scan
+      description: Create a new scan for the authenticated user
+      tags:
+        - Scans
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanInput'
+      responses:
+        '201':
+          description: Scan created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  scan:
+                    $ref: '#/components/schemas/Scan'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Scan limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /domains:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains'
-  /domains/{uuid}:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}'
-  /domains/{uuid}/subdomains:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}~1subdomains'
-  /domains/{uuid}/subdomains/import:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}~1subdomains~1import'
-  /domains/{uuid}/toggle:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}~1toggle'
-  /domains/{uuid}/subdomains/{subdomain_id}/toggle:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}~1subdomains~1{subdomain_id}~1toggle'
-  /domains/{uuid}/subdomains/{subdomain_id}:
-    $ref: './domain_controller.yaml#/paths/~1api~1v1~1domains~1{uuid}~1subdomains~1{subdomain_id}'
+  /api/v1/scans/{uuid}:
+    get:
+      summary: Get a specific scan
+      description: Retrieve details of a specific scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scan'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a scan
+      description: Update details of a specific scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanInput'
+      responses:
+        '200':
+          description: Scan updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  scan:
+                    $ref: '#/components/schemas/Scan'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a scan
+      description: Mark a scan as deleted
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scan deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: Cannot delete finished or in-progress scan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/scans/{uuid}/results:
+    get:
+      summary: Get scan results
+      description: Retrieve the results of a finished scan
+      tags:
+        - Scans
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScanResult'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+        '400':
+          description: Scan results not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains:
+    get:
+      summary: List domains
+      description: Retrieve a paginated list of domains for the authenticated user
+      tags:
+        - Domains
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Domain'
+                  links:
+                    type: object
+                  meta:
+                    type: object
+    post:
+      summary: Create a new domain
+      description: Create a new domain for the authenticated user
+      tags:
+        - Domains
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainInput'
+      responses:
+        '201':
+          description: Domain created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+
+  /api/v1/domains/{uuid}:
+    get:
+      summary: Get a specific domain
+      description: Retrieve details of a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a domain
+      description: Update details of a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainUpdateInput'
+      responses:
+        '200':
+          description: Domain updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a domain
+      description: Delete a specific domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Domain deleted successfully
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains:
+    get:
+      summary: List subdomains
+      description: Retrieve a list of subdomains for a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subdomain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Add a subdomain
+      description: Add a new subdomain to a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdomainInput'
+      responses:
+        '201':
+          description: Subdomain added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subdomain'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/import:
+    post:
+      summary: Import subdomains
+      description: Import multiple subdomains to a specific domain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subdomains:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Subdomains imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  imported:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/toggle:
+    post:
+      summary: Toggle domain activation
+      description: Toggle the activation status of a domain
+      tags:
+        - Domains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Domain activation toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainToggleResponse'
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/{subdomain_id}/toggle:
+    post:
+      summary: Toggle subdomain activation
+      description: Toggle the activation status of a subdomain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subdomain_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subdomain activation toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdomainToggleResponse'
+        '404':
+          description: Domain or subdomain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/domains/{uuid}/subdomains/{subdomain_id}:
+    delete:
+      summary: Delete a subdomain
+      description: Delete a specific subdomain
+      tags:
+        - Subdomains
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subdomain_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Subdomain deleted successfully
+        '404':
+          description: Domain or subdomain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Cannot delete main domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   schemas:
     Error:
       type: object
@@ -61,5 +644,187 @@ components:
             items:
               type: string
 
+    Scan:
+      type: object
+      properties:
+        uuid:
+          type: string
+        scan_name:
+          type: string
+        scan_occurrence:
+          type: string
+          enum: [daily, weekly, monthly, 'once off']
+        scan_type:
+          type: array
+          items:
+            type: string
+        severity:
+          type: array
+          items:
+            type: string
+        next_scan_date:
+          type: string
+          format: date
+        next_scan_time:
+          type: string
+          format: time
+        status:
+          type: string
+        domain:
+          type: string
+        subdomains:
+          type: array
+          items:
+            type: string
+        is_authenticated_scan:
+          type: boolean
+
+    ScanInput:
+      type: object
+      properties:
+        scan_name:
+          type: string
+        scan_domain:
+          type: string
+        scan_type:
+          type: array
+          items:
+            type: string
+        severity:
+          type: array
+          items:
+            type: string
+        scan_occurrence:
+          type: string
+          enum: [daily, weekly, monthly, 'once off']
+        next_scan_date:
+          type: string
+          format: date
+        next_scan_time:
+          type: string
+          format: time
+        status:
+          type: string
+        scan_subdomain:
+          type: array
+          items:
+            type: string
+        is_authenticated_scan:
+          type: boolean
+      required:
+        - scan_name
+        - scan_domain
+        - scan_type
+        - severity
+        - scan_occurrence
+        - next_scan_date
+        - next_scan_time
+        - status
+        - scan_subdomain
+
+    ScanResult:
+      type: object
+      properties:
+        uuid:
+          type: string
+        severity:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Domain:
+      type: object
+      properties:
+        uuid:
+          type: string
+        domain:
+          type: string
+        domain_key:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    DomainInput:
+      type: object
+      properties:
+        domain:
+          type: string
+        domain_key:
+          type: string
+      required:
+        - domain
+        - domain_key
+
+    DomainUpdateInput:
+      type: object
+      properties:
+        active:
+          type: boolean
+        waf_enabled:
+          type: boolean
+        ssl_enabled:
+          type: boolean
+        waf_configuration:
+          type: object
+
+    DomainToggleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        domain:
+          $ref: '#/components/schemas/Domain'
+
+    Subdomain:
+      type: object
+      properties:
+        subdomain:
+          type: string
+        full_subdomain:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    SubdomainInput:
+      type: object
+      properties:
+        subdomain:
+          type: string
+      required:
+        - subdomain
+
+    SubdomainToggleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        subdomain:
+          $ref: '#/components/schemas/Subdomain'
+
 security:
   - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
