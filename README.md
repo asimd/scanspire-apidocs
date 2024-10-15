@@ -1,10 +1,10 @@
 # Scanspire API Documentation
 
-This repository hosts the Swagger UI for Scanspire's API documentation. It uses GitHub Pages to provide a beautiful, interactive interface for exploring and understanding the Scanspire API.
+This repository hosts the Swagger UI for Scanspire's API documentation. It provides a beautiful, interactive interface for exploring and understanding the Scanspire API.
 
 ## Viewing the Documentation
 
-You can view the live API documentation at [[https://asimd.github.io/scanspire-apidocs]([https://apidocs.scanspire.com](https://apidocs.scanspire.com/)/)](https://asimd.github.io/scanspire-apidocs).
+You can view the live API documentation at [https://apidocs.scanspire.com/](https://apidocs.scanspire.com/).
 
 ## API Specification
 
@@ -27,7 +27,7 @@ To update the API documentation:
 
 1. Modify the relevant YAML files (`swagger.yaml`, `auth_controller.yaml`, `scan_controller.yaml`, or `domain_controller.yaml`).
 2. Commit and push your changes to the `master` branch.
-3. GitHub Pages will automatically rebuild and deploy the updated documentation.
+3. The changes will be automatically deployed to [https://apidocs.scanspire.com/](https://apidocs.scanspire.com/).
 
 ## Local Development
 
@@ -60,4 +60,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-This API documentation is powered by [Swagger UI](https://github.com/swagger-api/swagger-ui) and hosted with GitHub Pages.
+This API documentation is powered by [Swagger UI](https://github.com/swagger-api/swagger-ui) and hosted at [https://apidocs.scanspire.com/](https://apidocs.scanspire.com/).
